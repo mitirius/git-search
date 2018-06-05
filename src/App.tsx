@@ -16,9 +16,9 @@ class App extends React.PureComponent<{}, State> {
   callback1 = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({ repositoryQuery: event.target.value });
   callback2 = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({ userQuery: event.target.value });
 
-  search = () => {
+  search = (evt: React.SyntheticEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
     const URL = `https://api.github.com/issues/${this.state.userQuery}/${this.state.repositoryQuery}`;
-    console.log('this.state', this.state);
     console.log('url', URL);
   }
 
