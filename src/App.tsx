@@ -24,35 +24,41 @@ class App extends React.PureComponent<{}, State> {
     repositories: []
   };
 
-  // callback1 = (event: React.ChangeEvent<HTMLSelectElement>) => 
-  // this.setState({ repositoryQuery: event.target.value });
-  callback2 = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({ userQuery: event.target.value });
+  repoChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({ repositoryQuery: event.target.value });
+  userChange = (event: React.ChangeEvent<HTMLInputElement>) => this.setState({ userQuery: event.target.value });
 
-  search = (evt: React.SyntheticEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    const URL = `https://api.github.com/repos/${this.state.userQuery}/${this.state.repositoryQuery}/issues`;
+  search = (evt: React.ChangeEvent<HTMLSelectElement>) => {
+    const URL = `https://api.github.com/repos/${this.state.userQuery}/${evt.target.value}/issues`;
     fetch(URL, {
       headers: {
         'Accept': 'application/vnd.github.v3+json'
       }
     })
       .then(response => response.json())
-      .then(json => this.setState({ issues: json }));
+      .then(json => {
+        if (json.constructor === Array) {
+          this.setState({ issues: json });
+        }
+      });
   }
 
-  repositorySearch = (evt: React.ChangeEvent<HTMLInputElement>) => {
+  repositorySearch = (evt: React.FocusEvent<HTMLSelectElement>) => {
     if (this.state.userQuery !== null) {
       const REPO_URL = `https://api.github.com/users/${this.state.userQuery}/repos`;
       fetch(REPO_URL)
         .then(response => response.json())
-        .then(json => this.setState({ repositories: json }));
+        .then(json => {
+          if (json.constructor === Array) {
+            this.setState({ repositories: json });
+          }
+        });
     }
   }
 
   render() {
     return (
       <div className="app">
-        <div className="app-title">Git Issue</div>
+        <div className="app-title">Git Issue Search</div>
         <div className="app-search">
           <form>
             <div className="form-group">
@@ -63,17 +69,14 @@ class App extends React.PureComponent<{}, State> {
                 placeholder="Search for Owner..."
                 aria-label="Search for Owner"
                 value={this.state.userQuery}
-                onChange={this.repositorySearch}
+                onChange={this.userChange}
               />
             </div>
-            <Repository repositories={this.state.repositories} />
-            <button
-              className="btn btn-outline-warning"
-              type="submit"
-              onClick={this.search}
-            >
-              Search
-            </button>
+            <Repository
+              repositories={this.state.repositories}
+              search={this.search}
+              repositorySearch={this.repositorySearch}
+            />
           </form>
         </div>
         <IssuesProfile

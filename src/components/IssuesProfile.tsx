@@ -22,7 +22,8 @@ export interface Props {
 export default function IssuesProfile(props: Props) {
     return (
         <ul className="profile">
-            {props.issues.map(issue => <IssueItem key={issue.id.toString()} issue={issue} />)}
+            {props.issues.length > 0 ?
+                props.issues.map(issue => <IssueItem key={issue.id.toString()} issue={issue} />) : 'No Issues Found'}
         </ul>
     );
 }
