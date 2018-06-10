@@ -5,7 +5,7 @@ import { Repository } from '../App';
 interface Props {
     search: (evt: React.ChangeEvent<HTMLSelectElement>) => void;
     repositorySearch: (evt: React.FocusEvent<HTMLSelectElement>) => void;
-    repositories: Repository[];
+    repositories: ReadonlyArray<Repository>;
 }
 
 export default function Repository(props: Props) {
